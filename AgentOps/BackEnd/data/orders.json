@@ -1,0 +1,35 @@
+[
+  {
+    "order_id": "10482",
+    "customer": "Aarav Sharma",
+    "product": "Wireless Keyboard",
+    "quantity": 2,
+    "location": "Delhi",
+    "status": "In Transit",
+    "order_date": "2026-09-20",
+    "estimated_delivery": "2026-09-24",
+    "shipping_cost": 80
+  },
+  {
+    "order_id": "10483",
+    "customer": "Riya Verma",
+    "product": "USB-C Hub",
+    "quantity": 1,
+    "location": "Mumbai",
+    "status": "Processing",
+    "order_date": "2026-09-21",
+    "estimated_delivery": "2026-09-25",
+    "shipping_cost": 100
+  },
+  {
+    "order_id": "10484",
+    "customer": "Kabir Singh",
+    "product": "Bluetooth Speaker",
+    "quantity": 1,
+    "location": "Bangalore",
+    "status": "Delivered",
+    "order_date": "2026-09-17",
+    "estimated_delivery": "2026-09-20",
+    "shipping_cost": 120
+  }
+]
