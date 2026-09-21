@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgentOps — Multi-Agent Business Assistant</title>
+  <meta name="description" content="AI-powered multi-agent business operations dashboard for e-commerce. Automate inventory, pricing, logistics and customer queries." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Lucide Icons via CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+  <!-- Mobile Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <div class="app-shell">
+    <!-- ═══════════════════════════════════════════════════
+         SIDEBAR
+    ═══════════════════════════════════════════════════ -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <div class="logo-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="2" x2="12" y2="22"/><polyline points="2 8.5 12 14 22 8.5"/></svg>
+          </div>
+          <div>
+            <div class="logo-text">AgentOps</div>
+            <div class="logo-sub">Business Assistant</div>
+          </div>
+        </div>
+        <button class="sidebar-close" onclick="closeSidebar()" id="sidebarClose">
+          <i data-lucide="x" width="18" height="18"></i>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Main</div>
+        <a href="#" class="nav-item active" data-page="dashboard" onclick="navigate('dashboard',this)">
+          <i data-lucide="layout-dashboard" width="16" height="16"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="#" class="nav-item" data-page="assistant" onclick="navigate('assistant',this)">
+          <i data-lucide="bot" width="16" height="16"></i>
+          <span>AI Assistant</span>
+          <span class="nav-badge">AI</span>
+        </a>
+        <a href="#" class="nav-item" data-page="agents" onclick="navigate('agents',this)">
+          <i data-lucide="cpu" width="16" height="16"></i>
+          <span>Agents</span>
+          <span class="nav-dot online"></span>
+        </a>
+
+        <div class="nav-section-label" style="margin-top:20px">Operations</div>
+        <a href="#" class="nav-item" data-page="inventory" onclick="navigate('inventory',this)">
+          <i data-lucide="package" width="16" height="16"></i>
+          <span>Inventory</span>
+        </a>
+        <a href="#" class="nav-item" data-page="orders" onclick="navigate('orders',this)">
+          <i data-lucide="shopping-cart" width="16" height="16"></i>
+          <span>Orders</span>
+          <span class="nav-count">42</span>
+        </a>
+        <a href="#" class="nav-item" data-page="analytics" onclick="navigate('analytics',this)">
+          <i data-lucide="bar-chart-2" width="16" height="16"></i>
+          <span>Analytics</span>
+        </a>
+
+        <div class="nav-section-label" style="margin-top:20px">System</div>
+        <a href="#" class="nav-item" data-page="activity" onclick="navigate('activity',this)">
+          <i data-lucide="activity" width="16" height="16"></i>
+          <span>Activity</span>
+        </a>
+        <a href="#" class="nav-item" data-page="settings" onclick="navigate('settings',this)">
+          <i data-lucide="settings" width="16" height="16"></i>
+          <span>Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="system-status">
+          <div class="status-dot pulse"></div>
+          <span>All agents online</span>
+        </div>
+        <div class="sidebar-user">
+          <div class="avatar">AK</div>
+          <div>
+            <div class="user-name">Arjun Kumar</div>
+            <div class="user-role">Admin</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ═══════════════════════════════════════════════════
+         MAIN CONTENT
+    ═══════════════════════════════════════════════════ -->
+    <div class="main-content">
+      <!-- Header -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="hamburger" onclick="openSidebar()" id="hamburgerBtn">
+            <i data-lucide="menu" width="20" height="20"></i>
+          </button>
+          <div class="page-title-area">
+            <h1 class="page-title" id="pageTitle">Business Overview</h1>
+            <p class="page-subtitle" id="pageSubtitle">Monitor your operations and AI agents in real time.</p>
+          </div>
+        </div>
+        <div class="header-right">
+          <div class="live-time" id="liveTime"></div>
+          <button class="icon-btn" id="notifBtn" onclick="toggleNotif()">
+            <i data-lucide="bell" width="18" height="18"></i>
+            <span class="notif-badge">3</span>
+          </button>
+          <div class="avatar header-avatar">AK</div>
+        </div>
+      </header>
+
+      <!-- Notification Dropdown -->
+      <div class="notif-dropdown" id="notifDropdown">
+        <div class="notif-header">Notifications <span class="notif-count">3</span></div>
+        <div class="notif-item unread">
+          <div class="notif-icon warn"><i data-lucide="alert-triangle" width="14" height="14"></i></div>
+          <div><div class="notif-title">17 products below reorder level</div><div class="notif-time">2 min ago</div></div>
+        </div>
+        <div class="notif-item unread">
+          <div class="notif-icon info"><i data-lucide="bot" width="14" height="14"></i></div>
+          <div><div class="notif-title">AI completed 12 tasks</div><div class="notif-time">10 min ago</div></div>
+        </div>
+        <div class="notif-item">
+          <div class="notif-icon success"><i data-lucide="check-circle" width="14" height="14"></i></div>
+          <div><div class="notif-title">Order #10482 processed</div><div class="notif-time">18 min ago</div></div>
+        </div>
+      </div>
+
+      <!-- Pages Container -->
+      <main class="pages-container">
+
+        <!-- ═══════════ PAGE: DASHBOARD ═══════════ -->
+        <div class="page active" id="page-dashboard">
+          <!-- Stat Cards -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-label">Total Products</span>
+                <div class="stat-icon blue"><i data-lucide="package" width="16" height="16"></i></div>
+              </div>
+              <div class="stat-value">1,284</div>
+              <div class="stat-footer">
+                <span class="stat-change positive"><i data-lucide="trending-up" width="12" height="12"></i> +8.2%</span>
+                <span class="stat-period">vs last week</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-label">Low Stock Items</span>
+                <div class="stat-icon amber"><i data-lucide="alert-triangle" width="16" height="16"></i></div>
+              </div>
+              <div class="stat-value">17</div>
+              <div class="stat-footer">
+                <span class="stat-change negative"><i data-lucide="trending-up" width="12" height="12"></i> +5 items</span>
+                <span class="stat-period">needs attention</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-label">Pending Orders</span>
+                <div class="stat-icon purple"><i data-lucide="shopping-cart" width="16" height="16"></i></div>
+              </div>
+              <div class="stat-value">42</div>
+              <div class="stat-footer">
+                <span class="stat-change positive"><i data-lucide="trending-up" width="12" height="12"></i> +12.1%</span>
+                <span class="stat-period">vs last week</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-label">AI Tasks Completed</span>
+                <div class="stat-icon green"><i data-lucide="bot" width="16" height="16"></i></div>
+              </div>
+              <div class="stat-value">1,847</div>
+              <div class="stat-footer">
+                <span class="stat-change positive"><i data-lucide="trending-up" width="12" height="12"></i> +18.4%</span>
+                <span class="stat-period">vs last week</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chart + Activity Row -->
+          <div class="two-col-grid">
+            <!-- Operations Chart -->
+            <div class="card chart-card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">Operations Overview</div>
+                  <div class="card-subtitle">Last 7 days activity</div>
+                </div>
+                <div class="chart-legend">
+                  <span class="legend-dot blue"></span><span>Orders</span>
+                  <span class="legend-dot green"></span><span>AI Tasks</span>
+                  <span class="legend-dot purple"></span><span>Inventory</span>
+                </div>
+              </div>
+              <div class="chart-wrapper">
+                <canvas id="opsChart"></canvas>
+              </div>
+            </div>
+
+            <!-- Agent Activity -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">AI Agent Activity</div>
+                <span class="badge badge-blue">Live</span>
+              </div>
+              <div class="activity-feed" id="agentActivityFeed">
+                <div class="activity-item">
+                  <div class="activity-icon green"><i data-lucide="package" width="13" height="13"></i></div>
+                  <div class="activity-body">
+                    <div class="activity-agent">Inventory Agent</div>
+                    <div class="activity-desc">Checked stock for Wireless Keyboard</div>
+                    <div class="activity-meta"><span class="badge badge-green">SUCCESS</span><span class="activity-time">2 min ago</span></div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-icon blue"><i data-lucide="calculator" width="13" height="13"></i></div>
+                  <div class="activity-body">
+                    <div class="activity-agent">Pricing Agent</div>
+                    <div class="activity-desc">Calculated order total for 25 units</div>
+                    <div class="activity-meta"><span class="badge badge-green">SUCCESS</span><span class="activity-time">5 min ago</span></div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-icon purple"><i data-lucide="truck" width="13" height="13"></i></div>
+                  <div class="activity-body">
+                    <div class="activity-agent">Logistics Agent</div>
+                    <div class="activity-desc">Estimated delivery for Order #10482</div>
+                    <div class="activity-meta"><span class="badge badge-green">SUCCESS</span><span class="activity-time">8 min ago</span></div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-icon cyan"><i data-lucide="cpu" width="13" height="13"></i></div>
+                  <div class="activity-body">
+                    <div class="activity-agent">Orchestrator</div>
+                    <div class="activity-desc">Completed multi-agent workflow</div>
+                    <div class="activity-meta"><span class="badge badge-green">SUCCESS</span><span class="activity-time">12 min ago</span></div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-icon green"><i data-lucide="package" width="13" height="13"></i></div>
+                  <div class="activity-body">
+                    <div class="activity-agent">Inventory Agent</div>
+                    <div class="activity-desc">Low stock alert: Mechanical Keyboard</div>
+                    <div class="activity-meta"><span class="badge badge-amber">WARNING</span><span class="activity-time">15 min ago</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Attention Required -->
+          <div class="card attention-card">
+            <div class="card-header">
+              <div class="card-title"><i data-lucide="alert-circle" width="16" height="16" style="color:var(--amber);margin-right:8px;vertical-align:middle"></i>Attention Required</div>
+            </div>
+            <div class="attention-grid">
+              <div class="attention-item amber">
+                <div class="attention-icon"><i data-lucide="package-x" width="18" height="18"></i></div>
+                <div>
+                  <div class="attention-title">17 products below reorder level</div>
+                  <div class="attention-desc">Mechanical Keyboard, Webcam, USB-C Cable and 14 more</div>
+                </div>
+                <button class="btn btn-sm btn-outline" onclick="navigate('inventory', document.querySelector('[data-page=inventory]'))">View</button>
+              </div>
+              <div class="attention-item red">
+                <div class="attention-icon"><i data-lucide="shopping-cart" width="18" height="18"></i></div>
+                <div>
+                  <div class="attention-title">3 orders require manual review</div>
+                  <div class="attention-desc">Orders #10479, #10475, #10468 need verification</div>
+                </div>
+                <button class="btn btn-sm btn-outline" onclick="navigate('orders', document.querySelector('[data-page=orders]'))">View</button>
+              </div>
+              <div class="attention-item blue">
+                <div class="attention-icon"><i data-lucide="truck" width="18" height="18"></i></div>
+                <div>
+                  <div class="attention-title">2 delivery estimates need confirmation</div>
+                  <div class="attention-desc">Logistics agent awaiting input for remote pin codes</div>
+                </div>
+                <button class="btn btn-sm btn-outline">Review</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════ PAGE: AI ASSISTANT ═══════════ -->
+        <div class="page" id="page-assistant">
+          <div class="assistant-layout">
+            <!-- Chat Area -->
+            <div class="chat-panel">
+              <div class="chat-messages" id="chatMessages">
+                <!-- Welcome State -->
+                <div class="chat-welcome" id="chatWelcome">
+                  <div class="welcome-icon"><i data-lucide="bot" width="32" height="32"></i></div>
+                  <h2>Multi-Agent AI Assistant</h2>
+                  <p>I coordinate multiple specialized agents to handle your business operations. Ask me anything about inventory, pricing, logistics, or orders.</p>
+                </div>
+                <!-- Messages will be injected here -->
+              </div>
+
+              <!-- Suggested Prompts -->
+              <div class="suggested-prompts" id="suggestedPromptsArea">
+                <div class="prompts-label">Suggested queries</div>
+                <div class="prompts-grid">
+                  <button class="prompt-chip" onclick="sendSuggestedPrompt(this)">Check low-stock products</button>
+                  <button class="prompt-chip" onclick="sendSuggestedPrompt(this)">Check if 20 wireless keyboards are available and calculate total price</button>
+                  <button class="prompt-chip" onclick="sendSuggestedPrompt(this)">Find products with insufficient stock</button>
+                  <button class="prompt-chip" onclick="sendSuggestedPrompt(this)">Estimate delivery for Order #10482</button>
+                  <button class="prompt-chip" onclick="sendSuggestedPrompt(this)">Show today's business activity</button>
+                </div>
+              </div>
+
+              <!-- Chat Input -->
+              <div class="chat-input-area">
+                <div class="chat-input-box">
+                  <button class="input-action-btn" title="Attach file">
+                    <i data-lucide="paperclip" width="17" height="17"></i>
+                  </button>
+                  <textarea id="chatInput" class="chat-textarea" placeholder="Ask the assistant to analyze your business operations..." rows="1"
+                    onkeydown="handleChatKey(event)" oninput="autoResizeTextarea(this)"></textarea>
+                  <button class="input-action-btn" title="Voice input">
+                    <i data-lucide="mic" width="17" height="17"></i>
+                  </button>
+                  <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                    <i data-lucide="send" width="16" height="16"></i>
+                  </button>
+                </div>
+                <div class="input-hint">Press Enter to send · Shift+Enter for new line</div>
+              </div>
+            </div>
+
+            <!-- Agent Execution Panel -->
+            <div class="execution-panel" id="executionPanel">
+              <div class="exec-panel-header">
+                <div class="exec-title">Agent Execution</div>
+                <div class="exec-subtitle">Real-time workflow</div>
+              </div>
+              <div class="exec-idle" id="execIdle">
+                <i data-lucide="workflow" width="28" height="28"></i>
+                <p>Send a query to see the multi-agent workflow in action</p>
+              </div>
+              <div class="exec-steps" id="execSteps" style="display:none"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════ PAGE: AGENTS ═══════════ -->
+        <div class="page" id="page-agents">
+          <!-- Workflow Diagram -->
+          <div class="card workflow-diagram-card">
+            <div class="card-header">
+              <div class="card-title">Multi-Agent Orchestration Workflow</div>
+              <div class="card-subtitle">How agents collaborate to handle your requests</div>
+            </div>
+            <div class="workflow-diagram">
+              <div class="wf-node user-node">
+                <div class="wf-icon"><i data-lucide="user" width="18" height="18"></i></div>
+                <div class="wf-label">User Request</div>
+              </div>
+              <div class="wf-arrow down"><i data-lucide="arrow-down" width="16" height="16"></i></div>
+              <div class="wf-node orchestrator-node">
+                <div class="wf-icon"><i data-lucide="cpu" width="18" height="18"></i></div>
+                <div class="wf-label">Orchestrator</div>
+                <div class="wf-sublabel">Routes & Coordinates</div>
+              </div>
+              <div class="wf-branches">
+                <div class="wf-branch-line"></div>
+                <div class="wf-branch-nodes">
+                  <div class="wf-branch">
+                    <div class="wf-arrow down small"><i data-lucide="arrow-down" width="14" height="14"></i></div>
+                    <div class="wf-node agent-node green-node">
+                      <div class="wf-icon"><i data-lucide="package" width="15" height="15"></i></div>
+                      <div class="wf-label">Inventory Agent</div>
+                    </div>
+                  </div>
+                  <div class="wf-branch">
+                    <div class="wf-arrow down small"><i data-lucide="arrow-down" width="14" height="14"></i></div>
+                    <div class="wf-node agent-node blue-node">
+                      <div class="wf-icon"><i data-lucide="calculator" width="15" height="15"></i></div>
+                      <div class="wf-label">Pricing Agent</div>
+                    </div>
+                  </div>
+                  <div class="wf-branch">
+                    <div class="wf-arrow down small"><i data-lucide="arrow-down" width="14" height="14"></i></div>
+                    <div class="wf-node agent-node purple-node">
+                      <div class="wf-icon"><i data-lucide="truck" width="15" height="15"></i></div>
+                      <div class="wf-label">Logistics Agent</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="wf-branch-line"></div>
+              </div>
+              <div class="wf-arrow down"><i data-lucide="arrow-down" width="16" height="16"></i></div>
+              <div class="wf-node response-node">
+                <div class="wf-icon"><i data-lucide="check-circle" width="18" height="18"></i></div>
+                <div class="wf-label">Final Response</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Agent Cards -->
+          <div class="agents-grid">
+            <div class="agent-card" onclick="openAgentDrawer('orchestrator')">
+              <div class="agent-card-header">
+                <div class="agent-icon cyan"><i data-lucide="cpu" width="22" height="22"></i></div>
+                <div class="agent-status-badge online">● Online</div>
+              </div>
+              <div class="agent-name">Orchestrator Agent</div>
+              <div class="agent-desc">Central coordinator that receives user requests, plans workflows, and delegates tasks to specialized agents.</div>
+              <div class="agent-stats">
+                <div class="agent-stat"><div class="stat-n">1,847</div><div class="stat-l">Tasks</div></div>
+                <div class="agent-stat"><div class="stat-n">0.8s</div><div class="stat-l">Avg Time</div></div>
+                <div class="agent-stat"><div class="stat-n">99.2%</div><div class="stat-l">Success</div></div>
+              </div>
+              <div class="agent-tools">
+                <span class="tool-tag">Task Planning</span>
+                <span class="tool-tag">Agent Routing</span>
+                <span class="tool-tag">Result Synthesis</span>
+              </div>
+              <div class="agent-footer">
+                <span class="agent-last">Last active: 2 min ago</span>
+                <span class="view-detail">View details <i data-lucide="arrow-right" width="13" height="13"></i></span>
+              </div>
+            </div>
+
+            <div class="agent-card" onclick="openAgentDrawer('inventory')">
+              <div class="agent-card-header">
+                <div class="agent-icon green"><i data-lucide="package" width="22" height="22"></i></div>
+                <div class="agent-status-badge online">● Online</div>
+              </div>
+              <div class="agent-name">Inventory Agent</div>
+              <div class="agent-desc">Checks stock availability, monitors inventory levels, and triggers reorder alerts for low-stock products.</div>
+              <div class="agent-stats">
+                <div class="agent-stat"><div class="stat-n">482</div><div class="stat-l">Tasks</div></div>
+                <div class="agent-stat"><div class="stat-n">1.2s</div><div class="stat-l">Avg Time</div></div>
+                <div class="agent-stat"><div class="stat-n">98.7%</div><div class="stat-l">Success</div></div>
+              </div>
+              <div class="agent-tools">
+                <span class="tool-tag">Inventory Lookup</span>
+                <span class="tool-tag">Stock Availability</span>
+                <span class="tool-tag">Low Stock Detection</span>
+              </div>
+              <div class="agent-footer">
+                <span class="agent-last">Last active: 2 min ago</span>
+                <span class="view-detail">View details <i data-lucide="arrow-right" width="13" height="13"></i></span>
+              </div>
+            </div>
+
+            <div class="agent-card" onclick="openAgentDrawer('pricing')">
+              <div class="agent-card-header">
+                <div class="agent-icon blue"><i data-lucide="calculator" width="22" height="22"></i></div>
+                <div class="agent-status-badge online">● Online</div>
+              </div>
+              <div class="agent-name">Pricing Agent</div>
+              <div class="agent-desc">Calculates order totals, applies dynamic pricing rules, and generates cost breakdowns for business queries.</div>
+              <div class="agent-stats">
+                <div class="agent-stat"><div class="stat-n">364</div><div class="stat-l">Tasks</div></div>
+                <div class="agent-stat"><div class="stat-n">0.9s</div><div class="stat-l">Avg Time</div></div>
+                <div class="agent-stat"><div class="stat-n">100%</div><div class="stat-l">Success</div></div>
+              </div>
+              <div class="agent-tools">
+                <span class="tool-tag">Price Calculation</span>
+                <span class="tool-tag">Discount Engine</span>
+                <span class="tool-tag">Order Costing</span>
+              </div>
+              <div class="agent-footer">
+                <span class="agent-last">Last active: 5 min ago</span>
+                <span class="view-detail">View details <i data-lucide="arrow-right" width="13" height="13"></i></span>
+              </div>
+            </div>
+
+            <div class="agent-card" onclick="openAgentDrawer('logistics')">
+              <div class="agent-card-header">
+                <div class="agent-icon purple"><i data-lucide="truck" width="22" height="22"></i></div>
+                <div class="agent-status-badge online">● Online</div>
+              </div>
+              <div class="agent-name">Logistics Agent</div>
+              <div class="agent-desc">Estimates delivery timelines, calculates shipping costs, and provides logistics insights for order fulfilment.</div>
+              <div class="agent-stats">
+                <div class="agent-stat"><div class="stat-n">201</div><div class="stat-l">Tasks</div></div>
+                <div class="agent-stat"><div class="stat-n">1.5s</div><div class="stat-l">Avg Time</div></div>
+                <div class="agent-stat"><div class="stat-n">97.5%</div><div class="stat-l">Success</div></div>
+              </div>
+              <div class="agent-tools">
+                <span class="tool-tag">Delivery Estimation</span>
+                <span class="tool-tag">Shipping Calculator</span>
+                <span class="tool-tag">Route Optimization</span>
+              </div>
+              <div class="agent-footer">
+                <span class="agent-last">Last active: 8 min ago</span>
+                <span class="view-detail">View details <i data-lucide="arrow-right" width="13" height="13"></i></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════ PAGE: INVENTORY ═══════════ -->
+        <div class="page" id="page-inventory">
+          <!-- AI Insight Banner -->
+          <div class="ai-insight-banner">
+            <div class="ai-insight-icon"><i data-lucide="bot" width="16" height="16"></i></div>
+            <div class="ai-insight-text"><strong>AI Inventory Insight:</strong> 4 products may require restocking based on current inventory levels. Mechanical Keyboard stock is critically low.</div>
+            <button class="btn btn-sm btn-blue" onclick="navigate('assistant', document.querySelector('[data-page=assistant]')); setTimeout(()=>{document.getElementById('chatInput').value='Check low-stock products'; sendMessage();}, 500)">Ask AI</button>
+          </div>
+
+          <!-- Controls -->
+          <div class="table-controls">
+            <div class="search-box">
+              <i data-lucide="search" width="16" height="16"></i>
+              <input type="text" id="inventorySearch" placeholder="Search products..." oninput="filterInventory()" />
+            </div>
+            <div class="filter-tabs">
+              <button class="filter-tab active" onclick="setInventoryFilter('all', this)">All</button>
+              <button class="filter-tab" onclick="setInventoryFilter('in-stock', this)">In Stock</button>
+              <button class="filter-tab" onclick="setInventoryFilter('low-stock', this)">Low Stock</button>
+              <button class="filter-tab" onclick="setInventoryFilter('out-of-stock', this)">Out of Stock</button>
+            </div>
+            <button class="btn btn-blue" onclick="showToast('Feature coming soon — backend required', 'info')">
+              <i data-lucide="plus" width="15" height="15"></i> Add Product
+            </button>
+          </div>
+
+          <!-- Table -->
+          <div class="card table-card">
+            <div class="table-wrapper">
+              <table class="data-table" id="inventoryTable">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>SKU</th>
+                    <th>Category</th>
+                    <th>Stock</th>
+                    <th>Reorder Level</th>
+                    <th>Unit Price</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="inventoryBody">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════ PAGE: ORDERS ═══════════ -->
+        <div class="page" id="page-orders">
+          <div class="stats-grid four-col">
+            <div class="stat-card mini">
+              <div class="stat-label">Total Orders</div>
+              <div class="stat-value sm">1,284</div>
+            </div>
+            <div class="stat-card mini">
+              <div class="stat-label">Pending</div>
+              <div class="stat-value sm amber-text">42</div>
+            </div>
+            <div class="stat-card mini">
+              <div class="stat-label">Processing</div>
+              <div class="stat-value sm blue-text">18</div>
+            </div>
+            <div class="stat-card mini">
+              <div class="stat-label">Completed</div>
+              <div class="stat-value sm green-text">1,224</div>
+            </div>
+          </div>
+
+          <div class="card table-card">
+            <div class="card-header">
+              <div class="card-title">Orders</div>
+              <div class="search-box sm">
+                <i data-lucide="search" width="14" height="14"></i>
+                <input type="text" placeholder="Search orders..." oninput="filterOrders(this.value)" />
+              </div>
+            </div>
+            <div class="table-wrapper">
+              <table class="data-table" id="ordersTable">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Items</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="ordersBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════ PAGE: ANALYTICS ═══════════ -->
+        <div class="page" id="page-analytics">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-label">Revenue</span><div class="stat-icon green"><i data-lucide="indian-rupee" width="16" height="16"></i></div></div>
+              <div class="stat-value">₹8.42L</div>
+              <div class="stat-footer"><span class="stat-change positive"><i data-lucide="trending-up" width="12" height="12"></i> +22.3%</span><span class="stat-period">vs last month</span></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-label">Orders</span><div class="stat-icon blue"><i data-lucide="shopping-cart" width="16" height="16"></i></div></div>
+              <div class="stat-value">1,284</div>
+              <div class="stat-footer"><span class="stat-change positive"><i data-lucide="trending-up" width="12" height="12"></i> +14.7%</span><span class="stat-period">vs last month</span></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-label">Avg Order Value</span><div class="stat-icon purple"><i data-lucide="bar-chart-2" width="16" height="16"></i></div></div>
+              <div class="stat-value">₹2,940</div>
+              <div class="stat-footer"><span class="stat-change positive"><i data-lucide="trending-up" width="12" height="12"></i> +6.1%</span><span class="stat-period">vs last month</span></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header"><span class="stat-label">AI Automation Rate</span><div class="stat-icon cyan"><i data-lucide="bot" width="16" height="16"></i></div></div>
+              <div class="stat-value">78%</div>
+              <div class="stat-footer"><span class="stat-change positive"><i data-lucide="trending-up" width="12" height="12"></i> +5.2%</span><span class="stat-period">vs last month</span></div>
+            </div>
+          </div>
+
+          <div class="two-col-grid">
+            <div class="card chart-card">
+              <div class="card-header"><div class="card-title">Revenue Over Time</div><div class="card-subtitle">Last 7 days (₹)</div></div>
+              <div class="chart-wrapper"><canvas id="revenueChart"></canvas></div>
+            </div>
+            <div class="card chart-card">
+              <div class="card-header"><div class="card-title">Orders Over Time</div><div class="card-subtitle">Last 7 days</div></div>
+              <div class="chart-wrapper"><canvas id="ordersChart"></canvas></div>
+            </div>
+          </div>
+
+          <!-- AI Insights -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i data-lucide="sparkles" width="16" height="16" style="color:var(--accent);margin-right:8px;vertical-align:middle"></i>AI-Generated Business Insights</div>
+              <span class="badge badge-blue">AI Generated</span>
+            </div>
+            <div class="insights-list">
+              <div class="insight-item">
+                <div class="insight-icon"><i data-lucide="trending-up" width="16" height="16"></i></div>
+                <div class="insight-text">Wireless accessories account for <strong>62%</strong> of recent orders, indicating strong demand in the peripherals category.</div>
+              </div>
+              <div class="insight-item">
+                <div class="insight-icon warn"><i data-lucide="alert-triangle" width="16" height="16"></i></div>
+                <div class="insight-text">Mechanical Keyboard inventory is approaching its reorder threshold. Current stock: 12 units vs. reorder level of 25.</div>
+              </div>
+              <div class="insight-item">
+                <div class="insight-icon"><i data-lucide="bot" width="16" height="16"></i></div>
+                <div class="insight-text">AI agents completed <strong>1,847 operational tasks</strong> this month, reducing manual workload by an estimated 78%.</div>
+              </div>
+              <div class="insight-item">
+                <div class="insight-icon"><i data-lucide="package" width="16" height="16"></i></div>
+                <div class="insight-text">USB-C Hub shows a 40% increase in order volume over the last 2 weeks — consider increasing stock levels.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════ PAGE: ACTIVITY ═══════════ -->
+        <div class="page" id="page-activity">
+          <div class="activity-controls">
+            <div class="filter-tabs">
+              <button class="filter-tab active" onclick="setActivityFilter('all', this)">All</button>
+              <button class="filter-tab" onclick="setActivityFilter('agents', this)">Agents</button>
+              <button class="filter-tab" onclick="setActivityFilter('orders', this)">Orders</button>
+              <button class="filter-tab" onclick="setActivityFilter('inventory', this)">Inventory</button>
+              <button class="filter-tab" onclick="setActivityFilter('system', this)">System</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="timeline" id="activityTimeline"></div>
+          </div>
+        </div>
+
+        <!-- ═══════════ PAGE: SETTINGS ═══════════ -->
+        <div class="page" id="page-settings">
+          <div class="settings-grid">
+            <!-- Business Info -->
+            <div class="card settings-card">
+              <div class="settings-section-title"><i data-lucide="building-2" width="16" height="16"></i> Business Information</div>
+              <div class="form-group">
+                <label>Business Name</label>
+                <input type="text" class="form-input" value="TechGadgets India Pvt. Ltd." />
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email" class="form-input" value="admin@techgadgets.in" />
+              </div>
+              <div class="form-group">
+                <label>Currency</label>
+                <select class="form-input">
+                  <option selected>INR (₹)</option>
+                  <option>USD ($)</option>
+                </select>
+              </div>
+              <button class="btn btn-blue" onclick="showToast('Settings saved successfully','success')">Save Changes</button>
+            </div>
+
+            <!-- AI Configuration -->
+            <div class="card settings-card">
+              <div class="settings-section-title"><i data-lucide="bot" width="16" height="16"></i> AI Configuration</div>
+              <div class="form-group">
+                <label>AI Model</label>
+                <select class="form-input">
+                  <option selected>GPT-4 (Recommended)</option>
+                  <option>GPT-3.5</option>
+                  <option>Gemini Pro</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Max Concurrent Agents</label>
+                <input type="number" class="form-input" value="4" min="1" max="10" />
+              </div>
+              <div class="toggle-row">
+                <span>Enable multi-agent workflows</span>
+                <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+              </div>
+              <div class="toggle-row">
+                <span>Auto-reorder inventory</span>
+                <label class="toggle"><input type="checkbox" /><span class="toggle-slider"></span></label>
+              </div>
+              <button class="btn btn-blue" onclick="showToast('AI settings updated','success')">Save Changes</button>
+            </div>
+
+            <!-- API Configuration -->
+            <div class="card settings-card">
+              <div class="settings-section-title"><i data-lucide="code-2" width="16" height="16"></i> API Configuration</div>
+              <div class="info-banner">
+                <i data-lucide="info" width="14" height="14"></i>
+                Configure via <code>VITE_API_BASE_URL</code> in your <code>.env</code> file. Never store API keys in frontend code.
+              </div>
+              <div class="form-group">
+                <label>Backend API URL</label>
+                <input type="text" class="form-input" value="http://localhost:8000" id="apiUrlInput" />
+              </div>
+              <div class="form-group">
+                <label>API Status</label>
+                <div class="api-status" id="apiStatus">
+                  <span class="status-dot offline"></span> Not connected — backend not running
+                </div>
+              </div>
+              <button class="btn btn-outline" onclick="testApiConnection()">Test Connection</button>
+            </div>
+
+            <!-- Notifications -->
+            <div class="card settings-card">
+              <div class="settings-section-title"><i data-lucide="bell" width="16" height="16"></i> Notifications</div>
+              <div class="toggle-row">
+                <span>Low stock alerts</span>
+                <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+              </div>
+              <div class="toggle-row">
+                <span>New order notifications</span>
+                <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+              </div>
+              <div class="toggle-row">
+                <span>Agent error alerts</span>
+                <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+              </div>
+              <div class="toggle-row">
+                <span>Daily summary report</span>
+                <label class="toggle"><input type="checkbox" /><span class="toggle-slider"></span></label>
+              </div>
+              <button class="btn btn-blue" onclick="showToast('Notification preferences saved','success')">Save Changes</button>
+            </div>
+
+            <!-- Agent Configuration -->
+            <div class="card settings-card full-width">
+              <div class="settings-section-title"><i data-lucide="cpu" width="16" height="16"></i> Agent Configuration</div>
+              <div class="agents-config-grid">
+                <div class="agent-config-item">
+                  <div class="agent-config-name"><div class="agent-dot cyan"></div> Orchestrator Agent</div>
+                  <div class="toggle-row"><span>Enabled</span><label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label></div>
+                  <div class="form-group"><label>Timeout (seconds)</label><input type="number" class="form-input sm" value="30" /></div>
+                </div>
+                <div class="agent-config-item">
+                  <div class="agent-config-name"><div class="agent-dot green"></div> Inventory Agent</div>
+                  <div class="toggle-row"><span>Enabled</span><label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label></div>
+                  <div class="form-group"><label>Timeout (seconds)</label><input type="number" class="form-input sm" value="15" /></div>
+                </div>
+                <div class="agent-config-item">
+                  <div class="agent-config-name"><div class="agent-dot blue"></div> Pricing Agent</div>
+                  <div class="toggle-row"><span>Enabled</span><label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label></div>
+                  <div class="form-group"><label>Timeout (seconds)</label><input type="number" class="form-input sm" value="10" /></div>
+                </div>
+                <div class="agent-config-item">
+                  <div class="agent-config-name"><div class="agent-dot purple"></div> Logistics Agent</div>
+                  <div class="toggle-row"><span>Enabled</span><label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label></div>
+                  <div class="form-group"><label>Timeout (seconds)</label><input type="number" class="form-input sm" value="20" /></div>
+                </div>
+              </div>
+              <button class="btn btn-blue" onclick="showToast('Agent configuration saved','success')">Save Changes</button>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Agent Drawer -->
+  <div class="drawer-overlay" id="drawerOverlay" onclick="closeAgentDrawer()"></div>
+  <div class="agent-drawer" id="agentDrawer">
+    <div class="drawer-header">
+      <div>
+        <div class="drawer-title" id="drawerTitle">Agent Details</div>
+        <div class="drawer-subtitle" id="drawerSubtitle">Performance & Configuration</div>
+      </div>
+      <button class="drawer-close" onclick="closeAgentDrawer()"><i data-lucide="x" width="18" height="18"></i></button>
+    </div>
+    <div class="drawer-content" id="drawerContent"></div>
+  </div>
+
+  <!-- Order Detail Panel -->
+  <div class="drawer-overlay" id="orderOverlay" onclick="closeOrderPanel()"></div>
+  <div class="agent-drawer" id="orderDrawer">
+    <div class="drawer-header">
+      <div>
+        <div class="drawer-title" id="orderDrawerTitle">Order Details</div>
+        <div class="drawer-subtitle" id="orderDrawerSubtitle">AI-Generated Summary</div>
+      </div>
+      <button class="drawer-close" onclick="closeOrderPanel()"><i data-lucide="x" width="18" height="18"></i></button>
+    </div>
+    <div class="drawer-content" id="orderDrawerContent"></div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="index.js"></script>
+</body>
+</html>
