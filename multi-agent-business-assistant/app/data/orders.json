@@ -31,5 +31,16 @@
     "order_date": "2026-09-17",
     "estimated_delivery": "2026-09-20",
     "shipping_cost": 120
+  },
+  {
+    "order_id": "104845",
+    "customer": "Aneesh Ranhotra",
+    "product": "dvd player",
+    "quantity": 500,
+    "location": "Bangalore",
+    "status": "Delivered",
+    "order_date": "2026-09-15",
+    "estimated_delivery": "2026-10-31",
+    "shipping_cost": 1200000
   }
 ]
