@@ -1,0 +1,17 @@
+azure-ai-projects==2.7.0
+azure-identity
+openai
+
+agent-framework
+agent-framework-foundry
+
+fastapi
+uvicorn[standard]
+python-dotenv
+pydantic
+
+sqlmodel
+sqlalchemy
+requests
+
+pytest

@@ -1,10 +1,15 @@
 import os
 
-from agent_framework import Agent, tool
-from agent_framework.foundry import FoundryChatClient
+from dotenv import load_dotenv
+
+# Load variables from BackEnd/.env
+load_dotenv()
+
+from agent_framework import Agent, tool    # agent is the class used to create ai agents  and tool here will make python function behave like tool that can be called anytime 
+from agent_framework.foundry import FoundryChatClient # this is the chat with the model 
 from azure.identity import AzureCliCredential
 
-from tools.logistics_tools import (
+from app.tools.logistics_tools import (
     get_order_details,
     estimate_delivery,
     get_shipping_cost
@@ -14,7 +19,7 @@ from tools.logistics_tools import (
 @tool(approval_mode="never_require")
 def order_lookup(order_id: str) -> str:
     """
-    Find an e-commerce order using its order ID.
+    Find an e-commerce order using its order ID.  
     """
 
     result = get_order_details(order_id)
@@ -47,7 +52,7 @@ def shipping_calculator(order_id: str) -> str:
 logistics_agent = Agent(
     client=FoundryChatClient(
         project_endpoint=os.environ["FOUNDRY_PROJECT_ENDPOINT"],
-        model=os.environ["FOUNDRY_MODEL"],
+        model=os.environ["FOUNDRY_MODEL_NAME"],
         credential=AzureCliCredential(),
     ),
 
