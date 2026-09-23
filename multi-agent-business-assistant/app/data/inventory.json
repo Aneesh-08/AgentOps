@@ -1,0 +1,22 @@
+[
+    {
+        "name": "Wireless Keyboard",
+        "stock": 50,
+        "unit_price": 1200
+    },
+    {
+        "name": "Wireless Mouse",
+        "stock": 100,
+        "unit_price": 600
+    },
+    {
+        "name": "USB-C Hub",
+        "stock": 30,
+        "unit_price": 1500
+    },
+    {
+        "name": "Laptop Stand",
+        "stock": 25,
+        "unit_price": 1800
+    }
+]

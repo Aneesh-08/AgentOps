@@ -453,10 +453,6 @@ def run_pricing_agent(user_message: str):
     # Create / update the agent version
     agent = create_pricing_agent()
 
-    print("Pricing Agent created successfully.")
-    print(f"Agent name: {PRICING_AGENT_NAME}")
-    print(f"Agent version: {agent.version}")
-    print(f"Model: {FOUNDRY_MODEL_NAME}")
 
     # Send user's request to the agent
     response = openai_client.responses.create(
@@ -490,19 +486,9 @@ def run_pricing_agent(user_message: str):
 
         for call in function_calls:
 
-            print("\nAI requested tool:")
-            print(call.name)
 
             # Convert JSON string to Python dictionary
             arguments = json.loads(call.arguments)
-
-            print("\nArguments:")
-            print(
-                json.dumps(
-                    arguments,
-                    indent=2,
-                )
-            )
 
             # Execute the corresponding Python function
             result = execute_tool(
@@ -510,13 +496,6 @@ def run_pricing_agent(user_message: str):
                 arguments=arguments,
             )
 
-            print("\nPython tool result:")
-            print(
-                json.dumps(
-                    result,
-                    indent=2,
-                )
-            )
 
             # Send the tool result back to the AI agent
             tool_outputs.append(
@@ -545,9 +524,6 @@ def run_pricing_agent(user_message: str):
 
     # FINAL RESPONSE
 
-    print("\n" + "=" * 60)
-    print("FINAL PRICING AGENT RESPONSE")
-    print("=" * 60)
 
     print(response.output_text)
 
