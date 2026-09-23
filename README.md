@@ -2,13 +2,13 @@
 
 **Synchronizing Business Operations with AI**
 
-BuzSync is a multi-agent AI assistant that helps small business owners manage inventory, pricing, and logistics through a single natural-language interface. Instead of switching between separate tools for each operational task, an owner asks one question and an Orchestrator Agent routes it to the specialist agent — or agents — needed to answer it.
+BizSync is a multi-agent AI assistant that helps small business owners manage inventory, pricing, and logistics through a single natural-language interface. Instead of switching between separate tools for each operational task, an owner asks one question and an Orchestrator Agent routes it to the specialist agent — or agents — needed to answer it.
 
 ```
 "What is the total cost of 50 wireless keyboards and when will the order arrive?"
 ```
 
-BuzSync recognizes that this request spans both pricing and logistics, and coordinates both agents to produce a single response.
+BizSync recognizes that this request spans both pricing and logistics, and coordinates both agents to produce a single response.
 
 ---
 
@@ -39,7 +39,7 @@ Small businesses routinely juggle several operational tasks:
 - Tracking orders
 - Estimating deliveries and shipping costs
 
-BuzSync consolidates these into one system built on a multi-agent architecture, so an owner can manage all of them from a single conversational interface.
+BizSync consolidates these into one system built on a multi-agent architecture, so an owner can manage all of them from a single conversational interface.
 
 ## How It Works
 
@@ -48,7 +48,7 @@ BuzSync consolidates these into one system built on a multi-agent architecture, 
                           │
                           ▼
                   ┌────────────────┐
-                  │    BuzSync     │
+                  │    BizSync     │
                   │  Orchestrator  │
                   └───────┬────────┘
                           │
@@ -141,7 +141,7 @@ Order lookup, order status, destination, expected delivery, and shipping cost es
 
 ```
 ┌─────────────────────────────────────────────┐
-│                 BuzSync UI                   │
+│                 BizSync UI                   │
 │           HTML / CSS / JavaScript            │
 └──────────────────────┬───────────────────────┘
                        │
@@ -182,7 +182,7 @@ Order lookup, order status, destination, expected delivery, and shipping cost es
 ## Project Structure
 
 ```
-BuzSync/
+BizSync/
 │
 ├── FrontEnd/
 │   ├── index.html
@@ -221,7 +221,7 @@ BuzSync/
 
 ```bash
 git clone <YOUR_REPOSITORY_URL>
-cd BuzSync
+cd BizSync
 ```
 
 ### 2. Create a virtual environment
@@ -330,7 +330,7 @@ For queries spanning multiple domains, the `agents` array contains one entry per
 
 ## Team
 
-**BuzSync — Multi-Agent Business Assistant**
+**BizSync — Multi-Agent Business Assistant**
 
 Developed by:
 - Aneesh Ranhotra
