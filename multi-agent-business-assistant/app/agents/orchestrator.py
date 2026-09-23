@@ -1,9 +1,13 @@
-import os
+
 
 from dotenv import load_dotenv
 
 load_dotenv()
 
+import os
+from contextvars import ContextVar
+
+from dotenv import load_dotenv
 from agent_framework import Agent, tool
 from agent_framework.foundry import FoundryChatClient
 from azure.identity import AzureCliCredential
@@ -12,6 +16,8 @@ from app.agents.inventory_agent import create_inventory_agent
 from app.agents.logistics_agent import logistics_agent
 from app.agents.pricing_agent import run_pricing_agent
 
+
+agent_responses = ContextVar("agent_responses", default=None)
 
 # ============================================================
 # 1. CREATE THE INVENTORY AGENT
@@ -24,43 +30,95 @@ inventory_agent = create_inventory_agent()
 # 2. CREATE SPECIALIST AGENT TOOLS
 # ============================================================
 
+# @tool(approval_mode="never_require")
+# async def inventory_tool(query: str) -> str:
+#     """
+#     Delegate inventory-related requests to the Inventory Agent.
+#     The Inventory Agent prints its own final response.
+#     """
+
+#     result = await inventory_agent.run(query)
+
+#     print(result.text)
+
+#     return result.text
+
+
 @tool(approval_mode="never_require")
 async def inventory_tool(query: str) -> str:
-    """
-    Delegate inventory-related requests to the Inventory Agent.
-    The Inventory Agent prints its own final response.
-    """
 
     result = await inventory_agent.run(query)
 
-    print(result.text)
+    response_text = result.text
 
-    return result.text
+    print(response_text)
 
+    responses = agent_responses.get()
+
+    if responses is not None:
+        responses.append({
+            "name": "InventoryAgent",
+            "response": response_text
+        })
+
+    return response_text
+
+# @tool(approval_mode="never_require")
+# async def logistics_tool(query: str) -> str:
+#     """
+#     Delegate logistics-related requests to the Logistics Agent.
+#     The Logistics Agent prints its own final response.
+#     """
+
+#     result = await logistics_agent.run(query)
+
+#     print(result.text)
+
+#     return result.text
 
 @tool(approval_mode="never_require")
 async def logistics_tool(query: str) -> str:
-    """
-    Delegate logistics-related requests to the Logistics Agent.
-    The Logistics Agent prints its own final response.
-    """
 
     result = await logistics_agent.run(query)
 
-    print(result.text)
+    response_text = result.text
 
-    return result.text
+    print(response_text)
 
+    responses = agent_responses.get()
+
+    if responses is not None:
+        responses.append({
+            "name": "LogisticsAgent",
+            "response": response_text
+        })
+
+    return response_text
+
+
+# @tool(approval_mode="never_require")
+# def pricing_tool(query: str) -> str:
+#     """
+#     Delegate pricing-related requests to the Pricing Agent.
+#     The Pricing Agent prints its own final response.
+#     """
+
+#     return run_pricing_agent(query)
 
 @tool(approval_mode="never_require")
 def pricing_tool(query: str) -> str:
-    """
-    Delegate pricing-related requests to the Pricing Agent.
-    The Pricing Agent prints its own final response.
-    """
 
-    return run_pricing_agent(query)
+    response_text = run_pricing_agent(query)
 
+    responses = agent_responses.get()
+
+    if responses is not None:
+        responses.append({
+            "name": "PricingAgent",
+            "response": response_text
+        })
+
+    return response_text
 
 # ============================================================
 # 3. CREATE THE BUSINESS ORCHESTRATOR
