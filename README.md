@@ -296,7 +296,7 @@ Send a natural-language business query.
   "agents": [
     {
       "name": "PricingAgent",
-      "response": "🛒 Pricing Quote..."
+      "response": "Pricing Quote..."
     }
   ]
 }
