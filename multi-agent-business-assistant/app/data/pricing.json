@@ -1,0 +1,39 @@
+{
+    "products": [
+        {
+            "name": "Wireless Keyboard",
+            "unit_price": 1200
+        },
+        {
+            "name": "Wireless Mouse",
+            "unit_price": 600
+        },
+        {
+            "name": "USB-C Hub",
+            "unit_price": 1500
+        },
+        {
+            "name": "Laptop Stand",
+            "unit_price": 1800
+        }
+    ],
+    "discount_rules": [
+        {
+            "min_quantity": 1,
+            "discount_percent": 0
+        },
+        {
+            "min_quantity": 10,
+            "discount_percent": 5
+        },
+        {
+            "min_quantity": 20,
+            "discount_percent": 10
+        },
+        {
+            "min_quantity": 50,
+            "discount_percent": 15
+        }
+    ],
+    "tax_percent": 18
+}

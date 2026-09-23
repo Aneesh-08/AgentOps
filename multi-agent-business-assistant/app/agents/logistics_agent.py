@@ -114,16 +114,3 @@ You are a tool-using logistics specialist, not a generic chatbot.
 )
 
 
-# import asyncio
-
-
-# async def main():
-#     result = await logistics_agent.run(
-#         "What is the shipping cost for order #10482?"
-#     )
-
-#     print(result.text)
-
-
-# if __name__ == "__main__":
-#     asyncio.run(main())
