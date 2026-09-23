@@ -1,15 +1,8 @@
-import json
-from pathlib import Path
-
-
-INVENTORY_FILE = (
-    Path(__file__).resolve().parent.parent / "data" / "inventory.json"
-)
+from app.storage.azure_storage import load_json_from_blob
 
 
 def load_inventory():
-    with open(INVENTORY_FILE, "r", encoding="utf-8") as file:
-        return json.load(file)
+    return load_json_from_blob("inventory.json")
 
 
 def check_inventory(

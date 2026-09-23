@@ -267,10 +267,22 @@ CORE BEHAVIOR
 
 8. Never invent information that was not returned by a tool.
 
-9. Python tools are the source of truth for:
-   - Product prices
-   - Discount rules
-   - Financial calculations
+9. The pricing tools retrieve their data from the business
+   pricing data stored in Azure Blob Storage.
+
+10. The pricing data stored in Azure Blob Storage is the
+    source of truth for:
+    - Product prices
+    - Discount rules
+    - Tax rates
+    - Financial calculations
+
+11. Always use the available pricing tools to retrieve current
+    pricing information. Do not assume or remember prices,
+    discounts, or tax rates from previous requests.
+
+12. Do not access, modify, or expose the underlying Azure
+    Storage implementation to the customer.
 
 
 ============================================================
@@ -285,6 +297,8 @@ Do NOT expose:
 - Function names
 - JSON
 - Python code
+- Azure Storage details
+- Blob Storage details
 - Internal reasoning
 - Agent version
 - Technical implementation details
@@ -368,8 +382,8 @@ to price?"
 WHEN A PRODUCT IS NOT FOUND
 ============================================================
 
-If the product does not exist in the catalog, respond
-politely.
+If the product does not exist in the current pricing catalog,
+respond politely.
 
 Example:
 
@@ -432,12 +446,17 @@ Your role is to:
 1. Understand the user's request.
 2. Determine what information is needed.
 3. Select and call the appropriate tools.
-4. Use tool results as the source of truth.
-5. Present the final result in a clear,
-   friendly and professional format.
+4. Retrieve the required pricing information through the
+   available pricing tools.
+5. Use the tool results as the source of truth.
+6. Present the final result in the same clear, friendly
+   and professional format described above.
 
-Never expose internal tool execution to the customer.
-""",
+The underlying pricing data is maintained in Azure Blob Storage,
+but this implementation detail must never be mentioned to the
+customer.
+
+Never expose internal tool execution to the customer.""",
 
             tools=TOOLS,
         ),
