@@ -333,7 +333,8 @@ For queries spanning multiple domains, the `agents` array contains one entry per
 **BuzSync — Multi-Agent Business Assistant**
 
 Developed by:
-- Aneesh
-- Team Member 2
-- Team Member 3
-- Team Member 4
+- Aneesh Ranhotra
+- Priya Verma
+- Parv Mahajan
+- Pulkit Bajaj
+- Trisha Sharma 
