@@ -1,14 +1,8 @@
-import json
-from pathlib import Path
-from datetime import datetime
-
-
-DATA_FILE = Path(__file__).parent.parent / "data" / "orders.json"
+from app.storage.azure_storage import load_json_from_blob
 
 
 def load_orders():
-    with open(DATA_FILE, "r", encoding="utf-8") as f:
-        return json.load(f)
+    return load_json_from_blob("orders.json")
 
 
 def get_order_details(order_id: str):
